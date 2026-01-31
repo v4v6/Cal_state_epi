@@ -1,0 +1,15 @@
+# data
+/data/raw/**
+!/data/raw/Cal_HHS/.gitkeep
+/data/processed/**
+
+# notebooks
+.ipynb_checkpoints/
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+
+# OS
+.DS_Store

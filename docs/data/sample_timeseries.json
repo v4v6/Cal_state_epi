@@ -1,0 +1,15 @@
+[
+  {"week":"2025-11-03","series":"Respiratory","value": 10},
+  {"week":"2025-11-10","series":"Respiratory","value": 12},
+  {"week":"2025-11-17","series":"Respiratory","value": 11},
+  {"week":"2025-11-24","series":"Respiratory","value": 14},
+  {"week":"2025-12-01","series":"Respiratory","value": 16},
+  {"week":"2025-12-08","series":"Respiratory","value": 15},
+
+  {"week":"2025-11-03","series":"Wastewater","value": 8},
+  {"week":"2025-11-10","series":"Wastewater","value": 9},
+  {"week":"2025-11-17","series":"Wastewater","value": 9},
+  {"week":"2025-11-24","series":"Wastewater","value": 10},
+  {"week":"2025-12-01","series":"Wastewater","value": 12},
+  {"week":"2025-12-08","series":"Wastewater","value": 13}
+]

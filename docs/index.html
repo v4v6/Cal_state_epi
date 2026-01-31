@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>California Statewide Epi Dashboard</title>
+  <style>
+    :root { --fg:#111; --muted:#555; --bg:#fff; --card:#f6f7f8; --border:#e4e6e8; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; color:var(--fg); background:var(--bg); }
+    header { padding:24px 18px; border-bottom:1px solid var(--border); }
+    h1 { margin:0 0 6px 0; font-size:20px; }
+    .sub { color:var(--muted); font-size:13px; line-height:1.4; }
+    main { padding:18px; max-width:1200px; margin:0 auto; }
+    .grid { display:grid; grid-template-columns: repeat(12, 1fr); gap:12px; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px; }
+    .kpi { grid-column: span 3; }
+    .wide { grid-column: span 12; }
+    .half { grid-column: span 6; }
+    .kpi .label { color:var(--muted); font-size:12px; }
+    .kpi .value { font-size:22px; font-weight:700; margin-top:6px; }
+    .kpi .note { color:var(--muted); font-size:12px; margin-top:6px; }
+    footer { padding:18px; color:var(--muted); font-size:12px; border-top:1px solid var(--border); }
+    a { color:#0b57d0; }
+    code { background:#fff; padding:2px 6px; border:1px solid var(--border); border-radius:6px; }
+    @media (max-width: 900px) { .kpi { grid-column: span 6; } .half { grid-column: span 12; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>California Statewide Epidemiology Dashboard (Draft)</h1>
+    <div class="sub">
+      Infectious disease emphasis • Public-facing view<br/>
+      Data sources: CalHHS Open Data Portal (processed) • Last updated: <span id="lastUpdated">loading…</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid">
+      <div class="card kpi">
+        <div class="label">Respiratory virus signal</div>
+        <div class="value" id="kpiResp">—</div>
+        <div class="note" id="kpiRespNote">—</div>
+      </div>
+      <div class="card kpi">
+        <div class="label">Wastewater trend</div>
+        <div class="value" id="kpiWaste">—</div>
+        <div class="note" id="kpiWasteNote">—</div>
+      </div>
+      <div class="card kpi">
+        <div class="label">Hospitalization pressure</div>
+        <div class="value" id="kpiHosp">—</div>
+        <div class="note" id="kpiHospNote">—</div>
+      </div>
+      <div class="card kpi">
+        <div class="label">Vaccination coverage</div>
+        <div class="value" id="kpiVax">—</div>
+        <div class="note" id="kpiVaxNote">—</div>
+      </div>
+
+      <div class="card half">
+        <h3 style="margin:0 0 10px 0; font-size:14px;">Weekly time series (example)</h3>
+        <div id="chart" style="height:320px;"></div>
+        <div class="sub">This is a placeholder chart backed by <code>docs/data/sample_timeseries.json</code>. We’ll replace it with processed CalHHS-derived indicators.</div>
+      </div>
+
+      <div class="card half">
+        <h3 style="margin:0 0 10px 0; font-size:14px;">Notes</h3>
+        <ul class="sub" style="margin:0; padding-left:18px;">
+          <li>Public dashboard shows only aggregated, privacy-preserving metrics.</li>
+          <li>Manager dashboard (planned) adds drill-down, anomaly flags, and ops context.</li>
+          <li>Methodology and definitions live in <a href="../docs/STUDY_PROTOCOL.md">STUDY_PROTOCOL.md</a>.</li>
+        </ul>
+      </div>
+
+      <div class="card wide">
+        <h3 style="margin:0 0 10px 0; font-size:14px;">Data pipeline status</h3>
+        <div class="sub">This GitHub Pages site is static. Data must be precomputed into JSON/Parquet and committed under <code>docs/data/</code> (or published as release artifacts and fetched).</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    Repo: <a href="https://github.com/v4v6/Cal_state_epi">v4v6/Cal_state_epi</a> • Built for GitHub Pages
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  <script>
+    async function main() {
+      const meta = await fetch('./data/meta.json').then(r => r.json());
+      document.getElementById('lastUpdated').textContent = new Date(meta.generated_at).toLocaleString();
+
+      document.getElementById('kpiResp').textContent = meta.kpis.respiratory.value;
+      document.getElementById('kpiRespNote').textContent = meta.kpis.respiratory.note;
+
+      document.getElementById('kpiWaste').textContent = meta.kpis.wastewater.value;
+      document.getElementById('kpiWasteNote').textContent = meta.kpis.wastewater.note;
+
+      document.getElementById('kpiHosp').textContent = meta.kpis.hospital.value;
+      document.getElementById('kpiHospNote').textContent = meta.kpis.hospital.note;
+
+      document.getElementById('kpiVax').textContent = meta.kpis.vax.value;
+      document.getElementById('kpiVaxNote').textContent = meta.kpis.vax.note;
+
+      const ts = await fetch('./data/sample_timeseries.json').then(r => r.json());
+      const spec = {
+        $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+        width: 'container',
+        height: 300,
+        data: { values: ts },
+        mark: { type: 'line', point: true },
+        encoding: {
+          x: { field: 'week', type: 'temporal', title: 'Week' },
+          y: { field: 'value', type: 'quantitative', title: 'Index (placeholder)' },
+          color: { field: 'series', type: 'nominal', title: 'Series' },
+          tooltip: [
+            { field: 'week', type: 'temporal' },
+            { field: 'series', type: 'nominal' },
+            { field: 'value', type: 'quantitative' }
+          ]
+        }
+      };
+      vegaEmbed('#chart', spec, { actions: false });
+    }
+    main().catch(err => {
+      console.error(err);
+      document.getElementById('lastUpdated').textContent = 'error';
+    });
+  </script>
+</body>
+</html>

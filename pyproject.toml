@@ -1,0 +1,14 @@
+[project]
+name = "cal-state-epi"
+version = "0.0.1"
+description = "California statewide epi study + dashboards (infectious disease emphasis)"
+requires-python = ">=3.11"
+dependencies = [
+  "pandas>=2.2",
+  "pyarrow>=15",
+  "requests>=2.31",
+  "pydantic>=2.6",
+]
+
+[tool.ruff]
+line-length = 100

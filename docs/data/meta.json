@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-01-31T00:00:00Z",
+  "kpis": {
+    "respiratory": {"value": "MVP", "note": "Hooked to processed CalHHS indicators next"},
+    "wastewater": {"value": "MVP", "note": "Hooked to processed CalHHS indicators next"},
+    "hospital": {"value": "MVP", "note": "Hooked to processed CalHHS indicators next"},
+    "vax": {"value": "MVP", "note": "Hooked to processed CalHHS indicators next"}
+  }
+}

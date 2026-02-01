@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-02-01T00:44:42Z",
+  "alerts": {
+    "count": 4,
+    "note": "Simple anomaly heuristic (last week vs prior 4-week mean).",
+    "items": [
+      {
+        "level": "low",
+        "signal": "COVID-19 deaths",
+        "geo": "Statewide",
+        "week": "2026-01-19",
+        "reason": "Drop: 0.00\u00d7 vs prior 4-week mean"
+      },
+      {
+        "level": "low",
+        "signal": "Influenza deaths",
+        "geo": "Statewide",
+        "week": "2026-01-19",
+        "reason": "Drop: 0.13\u00d7 vs prior 4-week mean"
+      },
+      {
+        "level": "info",
+        "signal": "SARS\u2011CoV\u20112 (wastewater)",
+        "geo": "Statewide",
+        "week": "2026-01-26",
+        "reason": "Stable"
+      },
+      {
+        "level": "low",
+        "signal": "Influenza A (wastewater)",
+        "geo": "Statewide",
+        "week": "2026-01-26",
+        "reason": "Drop: 0.51\u00d7 vs prior 4-week mean"
+      },
+      {
+        "level": "low",
+        "signal": "RSV (wastewater)",
+        "geo": "Statewide",
+        "week": "2026-01-26",
+        "reason": "Drop: 0.61\u00d7 vs prior 4-week mean"
+      }
+    ]
+  },
+  "privacy": {
+    "release": "Statewide aggregates only (MVP)"
+  }
+}

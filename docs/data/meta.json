@@ -1,9 +1,27 @@
 {
-  "generated_at": "2026-01-31T00:00:00Z",
+  "generated_at": "2026-02-01T00:44:42Z",
   "kpis": {
-    "respiratory": {"value": "MVP", "note": "Hooked to processed CalHHS indicators next"},
-    "wastewater": {"value": "MVP", "note": "Hooked to processed CalHHS indicators next"},
-    "hospital": {"value": "MVP", "note": "Hooked to processed CalHHS indicators next"},
-    "vax": {"value": "MVP", "note": "Hooked to processed CalHHS indicators next"}
+    "respiratory": {
+      "value": "0 COVID deaths (wk)",
+      "note": "Latest statewide weekly deaths; source: Respiratory Virus Dashboard Metrics",
+      "week": "2026-01-19"
+    },
+    "wastewater": {
+      "value": "14,546 avg conc",
+      "note": "Statewide median PCR target concentration (SARS\u2011CoV\u20112)",
+      "week": "2026-01-26"
+    },
+    "hospital": {
+      "value": "Planned",
+      "note": "Hooking hospitalization datasets next"
+    },
+    "vax": {
+      "value": "91,045 doses (wk)",
+      "note": "Statewide weekly administered doses",
+      "week": "2026-01-26"
+    }
+  },
+  "sources": {
+    "calhhs_mirror": "/media/brain/brain_3/Open_claw/Cal_HHS/data"
   }
 }

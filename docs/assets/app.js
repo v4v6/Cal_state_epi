@@ -1,3 +1,12 @@
+// Minimal runtime diagnostics (helps when users report "no data")
+window.addEventListener('error', (e) => {
+  try {
+    const msg = e?.error?.message || e?.message || String(e);
+    const el = document.getElementById('dataStatus');
+    if (el) el.textContent = `error: ${msg}`;
+  } catch {}
+});
+
 async function fetchJson(path){
   const r = await fetch(path, {cache: 'no-store'});
   if(!r.ok) throw new Error(`HTTP ${r.status} for ${path}`);
@@ -152,12 +161,15 @@ function showView(which){
 }
 
 async function main(){
+  // Prove JS is running even before data loads.
+  setText('dataStatus', 'js: running…');
+
   try{
     await renderKpis();
     await renderPublicChart('resp');
   } catch (e){
     console.error(e);
-    setText('dataStatus', 'data: error');
+    setText('dataStatus', `data: error (${e?.message || e})`);
   }
 
   // public chart tabs

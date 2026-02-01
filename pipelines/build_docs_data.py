@@ -242,6 +242,81 @@ def main():
         },
     }
 
+    # County-level latest-week snapshots (for choropleth)
+    # Respiratory deaths (county)
+    deaths_raw = pd.read_csv(paths.resp_deaths)
+    deaths_raw = deaths_raw[deaths_raw["AREA_TYPE"].str.lower().eq("county")].copy()
+    deaths_raw["week"] = week_start(deaths_raw["DATE"])
+    # Latest week present in data (county)
+    last_week_deaths = deaths_raw["week"].dropna().max()
+    deaths_latest = deaths_raw[deaths_raw["week"].eq(last_week_deaths)].copy()
+    # Sum within county for that week
+    deaths_latest = (
+        deaths_latest.groupby("AREA", as_index=False)[
+            ["DEATHS_DC_DOD_COVID", "DEATHS_DC_DOD_INFLUENZA", "DEATHS_DC_DOD_ALL_DISEASE"]
+        ]
+        .sum(numeric_only=True)
+        .rename(columns={
+            "AREA": "county",
+            "DEATHS_DC_DOD_COVID": "covid_deaths",
+            "DEATHS_DC_DOD_INFLUENZA": "influenza_deaths",
+            "DEATHS_DC_DOD_ALL_DISEASE": "all_cause_deaths",
+        })
+    )
+    deaths_latest["week"] = last_week_deaths
+
+    # Wastewater latest week by county for sars-cov-2 (median)
+    ww_raw_use = ["sample_collect_date", "pcr_target", "pcr_target_avg_conc", "county_names"]
+    last_week_ww = None
+    ww_latest_rows = []
+    for chunk in pd.read_csv(paths.wastewater, usecols=ww_raw_use, chunksize=300_000, low_memory=False):
+        chunk = chunk[chunk["pcr_target"].eq("sars-cov-2")].copy()
+        if chunk.empty:
+            continue
+        chunk["week"] = week_start(chunk["sample_collect_date"])
+        # track last week as we stream
+        m = chunk["week"].dropna().max()
+        if last_week_ww is None or (isinstance(m, str) and m > last_week_ww):
+            last_week_ww = m
+        chunk["value"] = pd.to_numeric(chunk["pcr_target_avg_conc"], errors="coerce")
+        chunk = chunk.dropna(subset=["week", "value", "county_names"])
+        ww_latest_rows.append(chunk[["week", "county_names", "value"]])
+
+    if ww_latest_rows:
+        ww_raw = pd.concat(ww_latest_rows, ignore_index=True)
+        ww_latest = ww_raw[ww_raw["week"].eq(last_week_ww)].copy()
+        # county_names can be multi-county (comma-separated). Split and explode.
+        ww_latest["county_raw"] = ww_latest["county_names"].astype(str).str.split(",")
+        ww_latest = ww_latest.explode("county_raw")
+        ww_latest["county_raw"] = ww_latest["county_raw"].astype(str).str.strip()
+        ww_latest = ww_latest[ww_latest["county_raw"].ne("")]
+
+        # Normalize county identifiers.
+        # Observed format often looks like "[06001]" (FIPS). Keep both a clean FIPS key and a display label.
+        ww_latest["county_fips"] = (
+            ww_latest["county_raw"]
+            .str.replace("[", "", regex=False)
+            .str.replace("]", "", regex=False)
+            .str.strip()
+        )
+        # pad to 5 digits if numeric
+        ww_latest["county_fips"] = ww_latest["county_fips"].map(lambda x: str(x).zfill(5) if str(x).isdigit() else None)
+
+        ww_latest = ww_latest.dropna(subset=["county_fips"])
+        ww_latest = ww_latest.groupby("county_fips", as_index=False)["value"].median()
+        ww_latest = ww_latest.rename(columns={"value": "sarscov2_wastewater_conc"})
+        ww_latest["week"] = last_week_ww
+    else:
+        ww_latest = pd.DataFrame(columns=["county", "sarscov2_wastewater_conc", "week"])
+
+    county_snapshot = {
+        "generated_at": generated_at,
+        "deaths_week": str(last_week_deaths) if last_week_deaths is not None else None,
+        "wastewater_week": str(last_week_ww) if last_week_ww is not None else None,
+        "deaths": deaths_latest.to_dict(orient="records"),
+        "wastewater": ww_latest.to_dict(orient="records"),
+    }
+
     # Write outputs
     (OUT / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
     (OUT / "meta_manager.json").write_text(json.dumps(meta_mgr, indent=2), encoding="utf-8")
@@ -256,6 +331,8 @@ def main():
         resp.assign(domain="Deaths"),
     ], ignore_index=True)
     (OUT / "manager_timeseries.json").write_text(mgr_ts.to_json(orient="records"), encoding="utf-8")
+
+    (OUT / "county_latest.json").write_text(json.dumps(county_snapshot, indent=2), encoding="utf-8")
 
     print("Wrote", OUT)
 

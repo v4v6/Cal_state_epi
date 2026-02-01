@@ -3,161 +3,122 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>California Epi Dashboard</title>
-  <meta name="description" content="Statewide infectious disease situational awareness for California (public + manager views)." />
-  <link rel="stylesheet" href="./assets/site.css" />
+  <title>California Infectious Disease Dashboard</title>
+  <meta name="description" content="Statewide epidemiology dashboard for California with infectious disease emphasis." />
+  <link rel="stylesheet" href="./assets/site2.css" />
+  <link rel="stylesheet" href="./assets/vendor/leaflet.css" />
 </head>
 <body>
   <div class="topbar">
-    <div class="header">
+    <div class="hdr">
       <div class="brand">
         <div class="logo" aria-hidden="true"></div>
-        <div class="title">
-          <h1>California Epidemiology Dashboard</h1>
-          <div class="sub">
-            Infectious disease emphasis • Built from CalHHS open data • Updated <span id="lastUpdated">loading…</span>
-          </div>
+        <div>
+          <div class="h1">California Infectious Disease Dashboard</div>
+          <div class="sub">Public-facing situational awareness • CalHHS open data • Updated <span id="updated">loading…</span></div>
         </div>
       </div>
-
-      <div class="nav" role="navigation" aria-label="View selection">
-        <button class="pill" id="btnPublic" aria-current="page">Public</button>
-        <button class="pill" id="btnManager">Manager</button>
-        <span class="badge" id="dataStatus">data: loading</span>
-        <a class="pill" href="https://github.com/v4v6/Cal_state_epi" target="_blank" rel="noreferrer">Repo</a>
+      <div class="pills">
+        <span class="badge" id="status">loading…</span>
+        <a class="pill" href="https://github.com/v4v6/Cal_state_epi" target="_blank" rel="noreferrer">GitHub</a>
+        <a class="pill" href="./STUDY_PROTOCOL.md" target="_blank" rel="noreferrer">Methods</a>
       </div>
     </div>
   </div>
 
-  <div class="shell">
-    <!-- PUBLIC VIEW -->
-    <section id="viewPublic">
-      <div class="grid">
-        <div class="card kpi">
-          <h2>Respiratory (weekly)</h2>
-          <div class="value" id="kpiRespValue">—</div>
-          <div class="note" id="kpiRespNote">—</div>
-        </div>
-        <div class="card kpi">
-          <h2>Wastewater (weekly)</h2>
-          <div class="value" id="kpiWasteValue">—</div>
-          <div class="note" id="kpiWasteNote">—</div>
-        </div>
-        <div class="card kpi">
-          <h2>Hospital pressure</h2>
-          <div class="value" id="kpiHospValue">—</div>
-          <div class="note" id="kpiHospNote">—</div>
-        </div>
-        <div class="card kpi">
-          <h2>Vaccination (weekly)</h2>
-          <div class="value" id="kpiVaxValue">—</div>
-          <div class="note" id="kpiVaxNote">—</div>
-        </div>
+  <div class="wrap">
+    <div class="grid">
+      <!-- KPIs -->
+      <div class="card kpi">
+        <h2>Respiratory (weekly)</h2>
+        <div class="val" id="kpi1v">—</div>
+        <div class="note" id="kpi1n">—</div>
+      </div>
+      <div class="card kpi">
+        <h2>Wastewater (weekly)</h2>
+        <div class="val" id="kpi2v">—</div>
+        <div class="note" id="kpi2n">—</div>
+      </div>
+      <div class="card kpi">
+        <h2>Hospital pressure</h2>
+        <div class="val" id="kpi3v">—</div>
+        <div class="note" id="kpi3n">—</div>
+      </div>
+      <div class="card kpi">
+        <h2>Vaccination (weekly)</h2>
+        <div class="val" id="kpi4v">—</div>
+        <div class="note" id="kpi4n">—</div>
+      </div>
 
-        <div class="card wide">
-          <div style="display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap">
-            <div>
-              <div style="font-weight:700; font-size:14px;">Trends</div>
-              <div class="small">Statewide weekly indicators (MVP). County drill-down and hospitalization integration next.</div>
-            </div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap" aria-label="Indicator selection">
-              <button class="pill" id="pubTabResp" aria-current="page">Respiratory deaths</button>
-              <button class="pill" id="pubTabWaste">Wastewater</button>
-              <button class="pill" id="pubTabVax">Vaccination</button>
-            </div>
+      <!-- Filters / Tabs -->
+      <div class="card wide">
+        <div class="sectionTitle">
+          <div>
+            <div class="t">Trends</div>
+            <div class="d">Statewide weekly indicators. Built from precomputed JSON (no server required).</div>
           </div>
-          <hr class="sep" />
-          <div id="chartPublic" style="min-height:340px"></div>
-          <div class="small" id="publicChartNote"></div>
-        </div>
-
-        <div class="card half">
-          <div style="font-weight:700; font-size:14px; margin-bottom:8px;">What you’re seeing</div>
-          <div class="callout">
-            This is a static GitHub Pages dashboard. All charts are generated from precomputed, aggregated JSON.
-            We do not publish row-level health data.
-          </div>
-          <hr class="sep" />
-          <div class="small">
-            Definitions and methodology: <a href="./STUDY_PROTOCOL.md">Study protocol</a>
+          <div class="row">
+            <button class="pill" id="tabDeaths" aria-current="page">Deaths</button>
+            <button class="pill" id="tabWaste">Wastewater</button>
+            <button class="pill" id="tabVax">Vaccination</button>
           </div>
         </div>
-
-        <div class="card half">
-          <div style="font-weight:700; font-size:14px; margin-bottom:8px;">Data sources</div>
-          <table class="table" aria-label="Data sources">
-            <thead>
-              <tr><th>Domain</th><th>Source</th><th>Notes</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Deaths</td><td>Respiratory Virus Dashboard Metrics</td><td>Statewide weekly</td></tr>
-              <tr><td>Wastewater</td><td>Wastewater Surveillance (CA)</td><td>Median concentration by target</td></tr>
-              <tr><td>Vaccination</td><td>Vaccine Progress Dashboard</td><td>Statewide weekly doses</td></tr>
-            </tbody>
-          </table>
+        <hr class="sep" />
+        <div class="panel" style="height:380px">
+          <div class="label" style="margin-bottom:8px"><span id="chartTitle">—</span></div>
+          <canvas id="line" style="width:100%;height:330px"></canvas>
+        </div>
+        <div class="sub" style="margin-top:10px">
+          Note: Charts are rendered using local vendored libraries to avoid CDN/network issues.
         </div>
       </div>
-    </section>
 
-    <!-- MANAGER VIEW -->
-    <section id="viewManager" style="display:none">
-      <div class="grid">
-        <div class="card wide">
-          <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start; flex-wrap:wrap">
-            <div>
-              <div style="font-weight:750; font-size:15px;">Manager dashboard</div>
-              <div class="small">Operational view: alerts + monitoring. Updated <span id="lastUpdatedManager">loading…</span></div>
-            </div>
-            <div class="badge">alerts: <span id="mgrAlertCount">—</span></div>
+      <!-- Map -->
+      <div class="card half">
+        <div class="sectionTitle">
+          <div>
+            <div class="t">Wastewater map (SARS‑CoV‑2)</div>
+            <div class="d">Latest reported week by county where available.</div>
           </div>
-          <div class="small" id="mgrAlertNote" style="margin-top:6px;"></div>
         </div>
+        <hr class="sep" />
+        <div id="map"></div>
+        <div class="sub" id="mapNote" style="margin-top:10px">Loading map…</div>
+      </div>
 
-        <div class="card wide">
-          <div style="font-weight:700; font-size:14px; margin-bottom:8px;">Alerts (statewide, MVP)</div>
-          <table class="table" aria-label="Alerts">
-            <thead>
-              <tr>
-                <th>Level</th>
-                <th>Signal</th>
-                <th>Geo</th>
-                <th>Week</th>
-                <th>Reason</th>
-              </tr>
-            </thead>
-            <tbody id="alertsBody"></tbody>
-          </table>
-          <div class="small" style="margin-top:8px;">This is a conservative placeholder heuristic. We will replace with robust anomaly detection + reporting delay adjustment.</div>
+      <!-- About -->
+      <div class="card half">
+        <div class="sectionTitle">
+          <div>
+            <div class="t">About & data quality</div>
+            <div class="d">This dashboard is informational and privacy-preserving.</div>
+          </div>
         </div>
-
-        <div class="card wide">
-          <div style="font-weight:700; font-size:14px; margin-bottom:8px;">Signals overview</div>
-          <div id="chartManager" style="min-height:360px"></div>
+        <hr class="sep" />
+        <table class="table" aria-label="Sources">
+          <thead>
+            <tr><th>Indicator</th><th>Source</th><th>Aggregation</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Respiratory deaths</td><td>Respiratory Virus Dashboard Metrics</td><td>Statewide weekly</td></tr>
+            <tr><td>Wastewater</td><td>Wastewater Surveillance (CA)</td><td>Weekly median concentration</td></tr>
+            <tr><td>Vaccination</td><td>Vaccine Progress Dashboard</td><td>Statewide weekly doses</td></tr>
+          </tbody>
+        </table>
+        <div class="sub" style="margin-top:10px">
+          Next upgrades: county drill-down, normalization, anomaly detection, reporting-delay nowcasts.
         </div>
       </div>
-    </section>
 
-    <div class="footer">
-      <div>© California Epi (open data). Not medical advice.</div>
-      <div class="code">Static site • GitHub Pages • Precomputed aggregates</div>
+      <div class="footer wide">
+        Not medical advice. Always consult official sources for public health guidance.
+      </div>
     </div>
   </div>
 
-  <!-- Charts: prefer vendored assets (works even if CDNs are blocked) -->
-  <script src="./assets/vendor/vega.min.js"></script>
-  <script src="./assets/vendor/vega-lite.min.js"></script>
-  <script src="./assets/vendor/vega-embed.min.js"></script>
-
-  <!-- Fallback to CDN if vendored scripts fail to load for some reason -->
-  <script>
-    (function(){
-      if (window.vegaEmbed) return;
-      var s1=document.createElement('script'); s1.src='https://cdn.jsdelivr.net/npm/vega@5'; document.head.appendChild(s1);
-      var s2=document.createElement('script'); s2.src='https://cdn.jsdelivr.net/npm/vega-lite@5'; document.head.appendChild(s2);
-      var s3=document.createElement('script'); s3.src='https://cdn.jsdelivr.net/npm/vega-embed@6'; document.head.appendChild(s3);
-    })();
-  </script>
-
-  <script src="./assets/app.js"></script>
+  <!-- Vendored libs (no CDN dependency) -->
+  <script src="./assets/vendor/chart.umd.min.js"></script>
+  <script src="./assets/vendor/leaflet.js"></script>
+  <script src="./assets/app2.js"></script>
 </body>
 </html>

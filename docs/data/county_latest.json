@@ -1,0 +1,113 @@
+{
+  "generated_at": "2026-02-01T03:40:23Z",
+  "deaths_week": "nan",
+  "wastewater_week": "2026-01-26",
+  "deaths": [],
+  "wastewater": [
+    {
+      "county_fips": "06001",
+      "sarscov2_wastewater_conc": 0.0,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06013",
+      "sarscov2_wastewater_conc": 7208.6480459485,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06017",
+      "sarscov2_wastewater_conc": 25453.360713243,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06037",
+      "sarscov2_wastewater_conc": 44908.904336893,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06039",
+      "sarscov2_wastewater_conc": 1826.835711107,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06041",
+      "sarscov2_wastewater_conc": 7792.921497653,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06051",
+      "sarscov2_wastewater_conc": 26699.615586727,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06053",
+      "sarscov2_wastewater_conc": 3929.078877611,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06057",
+      "sarscov2_wastewater_conc": 0.0,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06061",
+      "sarscov2_wastewater_conc": 12045.501188826,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06065",
+      "sarscov2_wastewater_conc": 13123.103578884,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06069",
+      "sarscov2_wastewater_conc": 10613.715875596,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06077",
+      "sarscov2_wastewater_conc": 7490.77602797,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06079",
+      "sarscov2_wastewater_conc": 2516.8362909925,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06081",
+      "sarscov2_wastewater_conc": 29719.068319276,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06083",
+      "sarscov2_wastewater_conc": 5132.030319011,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06087",
+      "sarscov2_wastewater_conc": 5315.125490136,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06095",
+      "sarscov2_wastewater_conc": 5951.384930172,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06097",
+      "sarscov2_wastewater_conc": 20218.508453937,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06099",
+      "sarscov2_wastewater_conc": 14971.208677622999,
+      "week": "2026-01-26"
+    },
+    {
+      "county_fips": "06111",
+      "sarscov2_wastewater_conc": 2684.322439312,
+      "week": "2026-01-26"
+    }
+  ]
+}

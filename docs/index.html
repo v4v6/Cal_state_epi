@@ -143,10 +143,21 @@
     </div>
   </div>
 
-  <!-- Vega-Lite for charts -->
-  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  <!-- Charts: prefer vendored assets (works even if CDNs are blocked) -->
+  <script src="./assets/vendor/vega.min.js"></script>
+  <script src="./assets/vendor/vega-lite.min.js"></script>
+  <script src="./assets/vendor/vega-embed.min.js"></script>
+
+  <!-- Fallback to CDN if vendored scripts fail to load for some reason -->
+  <script>
+    (function(){
+      if (window.vegaEmbed) return;
+      var s1=document.createElement('script'); s1.src='https://cdn.jsdelivr.net/npm/vega@5'; document.head.appendChild(s1);
+      var s2=document.createElement('script'); s2.src='https://cdn.jsdelivr.net/npm/vega-lite@5'; document.head.appendChild(s2);
+      var s3=document.createElement('script'); s3.src='https://cdn.jsdelivr.net/npm/vega-embed@6'; document.head.appendChild(s3);
+    })();
+  </script>
+
   <script src="./assets/app.js"></script>
 </body>
 </html>
